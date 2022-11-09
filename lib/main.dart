@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'dart:async';
 import 'dart:convert';
@@ -15,8 +16,27 @@ void main() {
 
 const fiveSeconds = const Duration(seconds: 5);
 
+var _link;
+
+Future<void> initUniLinks() async {
+  // Platform messages may fail, so we use a try/catch PlatformException.
+  try {
+    _link = await getInitialLink();
+    // Parse the link and warn the user, if it is not correct,
+    // but keep in mind it could be `null`.
+  } on PlatformException {
+    // Handle exception by warning the user their action did not succeed
+    // return?
+  }
+}
+
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
+
+  void initState() {
+    initUniLinks();
+  }
+
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
@@ -36,7 +56,7 @@ class MyApp extends StatelessWidget {
 
 class Home extends StatelessWidget {
   Home({super.key});
-  final myController = TextEditingController();
+  final myController = TextEditingController(text: _link.toString());
   Future<http.Response> addTorrent(String magnet) {
     return http.post(
       Uri.parse('https://sndu46.deta.dev/check'),
