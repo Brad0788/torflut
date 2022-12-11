@@ -216,7 +216,8 @@ class _TorrentsListState extends State<TorrentsList> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-        future: fetchTorrents(),
+        future:
+            Future.delayed(const Duration(seconds: 3), () => fetchTorrents()),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             return ListView.builder(
